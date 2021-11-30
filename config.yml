@@ -1,0 +1,6 @@
+server:
+  rootPath: /api/v1/
+logging:
+  level: INFO
+  loggers:
+    org.gkh: DEBUG
