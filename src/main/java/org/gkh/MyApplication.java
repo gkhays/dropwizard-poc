@@ -3,8 +3,7 @@ package org.gkh;
 import org.gkh.auth.StaticAuthenticator;
 import org.gkh.core.User;
 import org.gkh.resources.HealthCheckResource;
-import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
-
+import org.gkh.resources.UserResource;
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.auth.AuthDynamicFeature;
@@ -42,6 +41,7 @@ public class MyApplication extends Application<MyConfiguration> {
         environment.jersey().register(new AuthValueFactoryProvider.Binder<>(User.class));
 
         environment.jersey().register(new HealthCheckResource());
+        environment.jersey().register(new UserResource());
     }
 
 }
