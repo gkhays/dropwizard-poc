@@ -15,6 +15,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <dropwizard.version>2.0.25</dropwizard.version>
+        <embedded-ui.version>1.0.0-SNAPSHOT</embedded-ui.version>
         <mainClass>org.gkh.Dropwizard PoCApplication</mainClass>
     </properties>
 
@@ -58,7 +59,43 @@
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.1.2</version>
+                <executions>
+                    <execution>
+                        <id>extract-from-war</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.gkh</groupId>
+                                    <artifactId>embedded-ui</artifactId>
+                                    <version>${embedded-ui.version}</version>
+                                    <type>war</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+                                    <includes></includes>
+                                    <excludes>META-INF/**,WEB-INF/**</excludes>
+                                </artifactItem>
+                            </artifactItems>
+                            <overWriteReleases>true</overWriteReleases>
+                            <overWriteSnapshots>true</overWriteSnapshots>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.2.4</version>
@@ -70,8 +107,15 @@
                             <mainClass>${mainClass}</mainClass>
                         </transformer>
                     </transformers>
-                    <!-- exclude signed Manifests -->
                     <filters>
+                        <filter>
+                            <artifact>org.gkh:embedded-ui:${embedded-ui.version}</artifact>
+                            <excludes>
+                                <exclude>META-INF/**</exclude>
+                                <exclude>WEB-INF/**</exclude>
+                            </excludes>
+                        </filter>
+                        <!-- exclude signed Manifests -->
                         <filter>
                             <artifact>*:*</artifact>
                             <excludes>
@@ -158,6 +202,7 @@
             </plugin>
         </plugins>
     </reporting>
+
     <profiles>
         <profile>
             <id>java11+</id>
@@ -173,4 +218,5 @@
             </properties>
         </profile>
     </profiles>
+
 </project>
